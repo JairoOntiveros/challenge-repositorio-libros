@@ -21,17 +21,20 @@ public class Libro {
     @Column(unique = true)
     private String titulo;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinTable(name = "libro_autor",
     joinColumns = @JoinColumn(name = "libro_id"),
     inverseJoinColumns = @JoinColumn(name = "autor_id"))
     private List<Autor> autores;
     private Integer descargas;
 
-    @ElementCollection(targetClass = Idiomas.class)
+    @ElementCollection(targetClass = Idiomas.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private List<Idiomas> idiomas;
 
+    public Libro(){
+
+    }
 
     public Libro(DatosLibros libroOtenido) {
         this.titulo = libroOtenido.titulo();

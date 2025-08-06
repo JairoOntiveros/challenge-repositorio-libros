@@ -1,15 +1,19 @@
 package com.jairoontiveros.challenge_repositorio_libros.principal;
 
 
-import com.jairoontiveros.challenge_repositorio_libros.model.DatosLibros;
-import com.jairoontiveros.challenge_repositorio_libros.model.Libro;
-import com.jairoontiveros.challenge_repositorio_libros.model.Resultados;
+import com.jairoontiveros.challenge_repositorio_libros.model.*;
+import com.jairoontiveros.challenge_repositorio_libros.repositorio.RepositorioAutor;
+import com.jairoontiveros.challenge_repositorio_libros.repositorio.RepositorioLibro;
 import com.jairoontiveros.challenge_repositorio_libros.service.APIService;
 import com.jairoontiveros.challenge_repositorio_libros.service.ConvierteDatos;
+import com.jairoontiveros.challenge_repositorio_libros.util.Imprime;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import static com.jairoontiveros.challenge_repositorio_libros.util.Imprime.imprimirAutores;
+import static com.jairoontiveros.challenge_repositorio_libros.util.Imprime.imprimirLibros;
 
 public class Principal {
 
@@ -18,6 +22,14 @@ public class Principal {
     private APIService apiService = new APIService();
     private ConvierteDatos conversor = new ConvierteDatos();
     private List<Libro> librosGuardados = new ArrayList<>();
+    private List<Autor> autoresGuardados = new ArrayList<>();
+    private RepositorioLibro repositorio;
+    private RepositorioAutor repositorioAutor;
+
+    public Principal(RepositorioLibro repository, RepositorioAutor repositorioAutor) {
+        this.repositorio = repository;
+        this.repositorioAutor = repositorioAutor;
+    }
 
 
     public void muestraMenu(){
@@ -53,10 +65,13 @@ public class Principal {
                     mostrarLibrosRegistrados();
                     break;
                 case 3:
+                    mostrarAutoresRegistrados();
                     break;
                 case 4:
+                    consultarAutoresVivosPorAnio();
                     break;
                 case 5:
+                    mostrarLibrosPorIdioma();
                     break;
 
                 case 0:
@@ -66,12 +81,9 @@ public class Principal {
                     System.out.println("Opcion Inválida");
 
             }
-
-
         }
-
-
     }
+
     private DatosLibros getLibroWeb(){
         System.out.println("Escribe el libro que quieres buscar y guardar");
         var nombreLibro = teclado.nextLine();
@@ -86,9 +98,9 @@ public class Principal {
         //pasando los datos parseados al record adecuado
         DatosLibros libroObtenido = respuestaLibro.resultados().get(0);
 
-
        return libroObtenido;
     }
+
 
     public Libro buscarLibroWeb(){
         DatosLibros libroOptenido = getLibroWeb();
@@ -99,22 +111,61 @@ public class Principal {
 
         Libro libro = new Libro(libroOptenido);
         System.out.println("Libro guardado exitosamente");
-        //lista para guardar libros buscados temporal
-
-        librosGuardados.add(libro);
+        repositorio.save(libro);
         return libro;
 
     }
 
-    public void mostrarLibrosRegistrados() {
-        if (librosGuardados.isEmpty()) {
-            System.out.println("No hay libros registrados.");
-            return;
-        }
 
-        librosGuardados.forEach(System.out::println);
+    public void mostrarLibrosRegistrados() {
+        librosGuardados = repositorio.findAll();
+        Imprime.imprimirLibros(librosGuardados);
     }
 
 
+    public void mostrarAutoresRegistrados(){
+        autoresGuardados = repositorioAutor.findAllWithLibros();
+
+        if (autoresGuardados.isEmpty()){
+            System.out.println("NO hay autores registrados");
+            return;
+        }
+
+        imprimirAutores(autoresGuardados);
+
+
+    }
+
+    private void consultarAutoresVivosPorAnio() {
+        System.out.print("Ingresa el año para buscar autores vivos: ");
+        int anho = teclado.nextInt();
+        teclado.nextLine();
+        List<Autor> autores = repositorioAutor.buscarAutoresVivosPorAnho(anho);
+
+        if (autores.isEmpty()) {
+            System.out.println("No se encontraron autores vivos en el año " + anho);
+        } else {
+            System.out.println("Autores vivos en el año " + anho + ":");
+            imprimirAutores(autores);
+        }
+    }
+
+
+    private void mostrarLibrosPorIdioma(){
+        System.out.print("Ingrese el idioma (código, ej: es, en): ");
+        String idioma = teclado.nextLine().trim();
+
+        Idiomas idiomaSeleccionado = Idiomas.fromString(idioma);
+        List<Libro> librosPorIdioma = repositorio.findByIdioma(idiomaSeleccionado);
+
+        if(librosPorIdioma.isEmpty()){
+            System.out.println("No se encontraron libros para el idioma: "+idiomaSeleccionado.getLanguages());
+        }else{
+            System.out.println("Libros encontrados para el idioma "+idiomaSeleccionado.getLanguages()+":");
+            for (Libro libro: librosPorIdioma){
+                imprimirLibros(librosPorIdioma);
+            }
+        }
+    }
 
 }

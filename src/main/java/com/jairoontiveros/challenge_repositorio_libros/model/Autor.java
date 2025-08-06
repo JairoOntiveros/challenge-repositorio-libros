@@ -14,8 +14,13 @@ public class Autor {
     private String nombre;
     private Integer fechaNacimiento;
     private Integer fechaDeMuerte;
+
     @ManyToMany(mappedBy = "autores")
     private List<Libro> libros;
+
+    public Autor(){
+
+    }
 
     public Autor(String nombre,Integer fechaNacimiento,Integer fechaDeMuerte  ) {
         this.fechaDeMuerte = fechaDeMuerte;
@@ -29,6 +34,10 @@ public class Autor {
 
     public void setId(Long id) {
         Id = id;
+    }
+
+    public List<Libro> getLibros() {
+        return libros;
     }
 
     public String getNombre() {
@@ -58,8 +67,8 @@ public class Autor {
     @Override
     public String toString() {
         return "nombre='" + nombre + '\'' +
-                ", fechaNacimiento=" + fechaNacimiento +
-                ", fechaDeMuerte=" + fechaDeMuerte;
+                ", fechaNacimiento=" + (fechaNacimiento != null ? fechaNacimiento: "Desconocida") +
+                ", fechaDeMuerte=" + (fechaDeMuerte != null ? fechaDeMuerte: "Desconocida");
     }
 }
 
