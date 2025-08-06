@@ -12,8 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import static com.jairoontiveros.challenge_repositorio_libros.util.Imprime.imprimirAutores;
-import static com.jairoontiveros.challenge_repositorio_libros.util.Imprime.imprimirLibros;
+import static com.jairoontiveros.challenge_repositorio_libros.util.Imprime.*;
 
 public class Principal {
 
@@ -41,7 +40,8 @@ public class Principal {
                     2 - Mostar libros registrados
                     3 - Mostrar autores registrados
                     4 - Consultar autores vivos por año
-                    5 - Mostrar libros por idioma
+                    5 - Mostrar Estadisticas por idioma
+                    6 - Mostrar libros por idioma
                     
                                   
                     0 - Salir
@@ -52,14 +52,14 @@ public class Principal {
             try {
                 opcion = Integer.parseInt(entrada);
             } catch (NumberFormatException e) {
-                System.out.println("Entrada inválida");
+                System.out.println("Entrada inválida, por favor seleccione un número");
                 continue;
             }
 
             switch (opcion){
                 case 1:
                    var libro = buscarLibroWeb();
-                    System.out.println(libro);
+                    imprimirLibro(libro);
                     break;
                 case 2:
                     mostrarLibrosRegistrados();
@@ -71,6 +71,8 @@ public class Principal {
                     consultarAutoresVivosPorAnio();
                     break;
                 case 5:
+                    mostrarEstadisticasPorIdioma();
+                case 6:
                     mostrarLibrosPorIdioma();
                     break;
 
@@ -110,6 +112,13 @@ public class Principal {
         }
 
         Libro libro = new Libro(libroOptenido);
+
+        if(repositorio.existsByTitulo(libro.getTitulo())){
+            System.out.println("Este libro ya existe en la base de datos.");
+            return repositorio.findByTitulo(libro.getTitulo()).orElse(null);
+        }
+
+
         System.out.println("Libro guardado exitosamente");
         repositorio.save(libro);
         return libro;
@@ -149,6 +158,28 @@ public class Principal {
             imprimirAutores(autores);
         }
     }
+
+    public void mostrarEstadisticasPorIdioma(){
+        System.out.print("Ingrese el idioma (código, ej: es, en): ");
+        String idioma = teclado.nextLine().trim();
+
+        Idiomas idiomaSeleccionado;
+        try {
+            idiomaSeleccionado = Idiomas.fromString(idioma);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Código de idioma no válido.");
+            return;
+        }
+
+        List<Libro> librosPorIdioma = repositorio.findByIdioma(idiomaSeleccionado);
+
+        System.out.println("----------------------------------");
+        System.out.println("Estadísticas para el idioma: " + idiomaSeleccionado.getIdiomaCompleto());
+        System.out.println("Cantidad de libros disponibles: " + librosPorIdioma.size());
+        System.out.println("----------------------------------");
+    }
+
+
 
 
     private void mostrarLibrosPorIdioma(){

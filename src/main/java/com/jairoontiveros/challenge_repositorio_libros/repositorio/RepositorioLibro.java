@@ -7,10 +7,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RepositorioLibro extends JpaRepository<Libro,Long> {
 
     @Query("SELECT l FROM Libro l JOIN l.idiomas i WHERE i= :idioma")
     List<Libro> findByIdioma(@Param("idioma") Idiomas idioma);
+
+    Optional<Libro> findByTitulo(String titulo);
+    boolean existsByTitulo(String titulo);
 
 }

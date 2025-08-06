@@ -4,6 +4,7 @@ import com.jairoontiveros.challenge_repositorio_libros.model.Autor;
 import com.jairoontiveros.challenge_repositorio_libros.model.Idiomas;
 import com.jairoontiveros.challenge_repositorio_libros.model.Libro;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,14 @@ public class Imprime {
                     .collect(Collectors.joining(", "));
             System.out.println("\nIdiomas     : " + idiomasTexto);
             System.out.println("════════════════════════════════════════════\n");
+        }
+    }
+
+    public static void imprimirLibro(Libro libro) {
+        if (libro == null) {
+            System.out.println("No se encontró ningún libro para mostrar.");
+        } else {
+            imprimirLibros(Collections.singletonList(libro));
         }
     }
 
