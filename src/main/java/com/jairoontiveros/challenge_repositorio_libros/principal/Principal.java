@@ -100,6 +100,7 @@ public class Principal {
         Libro libro = new Libro(libroOptenido);
         System.out.println("Libro guardado exitosamente");
         //lista para guardar libros buscados temporal
+
         librosGuardados.add(libro);
         return libro;
 
