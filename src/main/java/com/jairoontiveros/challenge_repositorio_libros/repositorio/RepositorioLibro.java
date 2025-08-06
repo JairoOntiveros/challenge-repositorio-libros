@@ -15,6 +15,9 @@ public interface RepositorioLibro extends JpaRepository<Libro,Long> {
     List<Libro> findByIdioma(@Param("idioma") Idiomas idioma);
 
     Optional<Libro> findByTitulo(String titulo);
+
     boolean existsByTitulo(String titulo);
+
+    List<Libro> findTop10ByOrderByDescargasDesc();
 
 }

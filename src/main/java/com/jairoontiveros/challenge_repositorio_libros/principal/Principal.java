@@ -42,6 +42,7 @@ public class Principal {
                     4 - Consultar autores vivos por año
                     5 - Mostrar Estadisticas por idioma
                     6 - Mostrar libros por idioma
+                    7 - Mostrar Top 10 libros descargados
                     
                                   
                     0 - Salir
@@ -75,6 +76,8 @@ public class Principal {
                 case 6:
                     mostrarLibrosPorIdioma();
                     break;
+                case 7:
+                    mostrarTop10LibrosDescargados();
 
                 case 0:
                     System.out.println("Cerrando la aplicacion.......");
@@ -197,6 +200,12 @@ public class Principal {
                 imprimirLibros(librosPorIdioma);
             }
         }
+    }
+
+    private void mostrarTop10LibrosDescargados(){
+        List<Libro> topLibros = repositorio.findTop10ByOrderByDescargasDesc();
+        System.out.println("--Top 10 libros mas descargados--");
+        Imprime.imprimirLibros(topLibros);
     }
 
 }
