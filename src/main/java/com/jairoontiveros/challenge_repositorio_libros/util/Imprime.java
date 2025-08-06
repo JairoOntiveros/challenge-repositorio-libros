@@ -13,9 +13,10 @@ import java.util.stream.Collectors;
 public class Imprime {
     public static void imprimirLibros(Iterable<Libro> libros) {
         for (Libro libro : libros) {
+            System.out.println("════════════════════════════════════════════");
+            System.out.println("Título      : " + libro.getTitulo());
 
-            System.out.println("Título: " + libro.getTitulo());
-            System.out.println("Autores:");
+            System.out.println("\nAutores     :");
             for (Autor autor : libro.getAutores()) {
                 String fechaNacimiento = (autor.getFechaNacimiento() != null)
                         ? autor.getFechaNacimiento().toString()
@@ -24,23 +25,25 @@ public class Imprime {
                         ? autor.getFechaDeMuerte().toString()
                         : "Desconocida";
 
-                System.out.println(" - " + autor.getNombre() +
-                        " (nacido: " + fechaNacimiento +
-                        ", fallecido: " + fechaDeMuerte + ")");
+                System.out.println("  - " + autor.getNombre());
+                System.out.println("    Nacimiento     : " + fechaNacimiento);
+                System.out.println("    Fallecimiento  : " + fechaDeMuerte);
             }
-            System.out.println("Descargas: " + libro.getDescargas());
+
+            System.out.println("\nDescargas   : " + libro.getDescargas());
 
             String idiomasTexto = libro.getIdiomas().stream()
                     .map(Idiomas::getIdiomaCompleto)
                     .collect(Collectors.joining(", "));
-            System.out.println("Idiomas: " + idiomasTexto);
-            System.out.println("----------------------------------");
+            System.out.println("\nIdiomas     : " + idiomasTexto);
+            System.out.println("════════════════════════════════════════════\n");
         }
     }
 
     public static void imprimirAutores(List<Autor> autores) {
         for (Autor autor : autores) {
-            //comprobacion de Null
+            System.out.println("════════════════════════════════════════════");
+            System.out.println("Autor       : " + autor.getNombre());
 
             String fechaNacimiento = (autor.getFechaNacimiento() != null)
                     ? autor.getFechaNacimiento().toString()
@@ -49,18 +52,19 @@ public class Imprime {
                     ? autor.getFechaDeMuerte().toString()
                     : "Desconocida";
 
+            System.out.println("Nacimiento  : " + fechaNacimiento);
+            System.out.println("Fallecimiento: " + fechaDeMuerte);
 
-
-
-
-            System.out.println("Autor: " + autor.getNombre() +
-                    " (nacido: " + fechaNacimiento +
-                    ", fallecido: " + fechaDeMuerte + ")");
-            System.out.println("Libros:");
-            for (Libro libro : autor.getLibros()) {
-                System.out.println(" - " + libro.getTitulo());
+            System.out.println("\nLibros      :");
+            if (autor.getLibros() == null || autor.getLibros().isEmpty()) {
+                System.out.println("  (No se encontraron libros asociados)");
+            } else {
+                for (Libro libro : autor.getLibros()) {
+                    System.out.println("  - " + libro.getTitulo());
+                }
             }
-            System.out.println("----------------------------------");
+
+            System.out.println("════════════════════════════════════════════\n");
         }
     }
 }
